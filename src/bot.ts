@@ -2,12 +2,18 @@ import { Telegraf } from 'telegraf';
 import LocalSession from 'telegraf-session-local';
 
 import { IBotContext } from './context/context.interface';
-import { IConfigService } from './config/config.interface';
-import { IDatabaseService } from './database/database.interface';
-import { ILoggerService } from './logger/logger.interface';
 
 import{ IAuthService } from './auth/auth.interface';
 import{ AuthService } from './auth/auth.class';
+
+import { LoggerService } from './logger/logger.service';
+import { ILoggerService } from './logger/logger.interface';
+
+import { IDatabaseService } from './database/database.interface';
+import { DatabaseService } from './database/database.service';
+
+import { IConfigService } from './config/config.interface';
+import { ConfigService } from './config/config.service';
 
 import { Command} from './commands/command.class';
 import { StartCommand } from './commands/start.command';
@@ -21,15 +27,12 @@ export class Bot {
 	commands: Command[] = [];
 	auth: IAuthService;
 
-	private readonly configService: IConfigService;
+	constructor() {
+		const config: IConfigService = ConfigService.getInstance();
+		const logger: ILoggerService = LoggerService.getInstance();
+		const database: IDatabaseService = DatabaseService.getInstance();
 
-	constructor(
-		configService: IConfigService,
-		logger: ILoggerService,
-		database: IDatabaseService,
-	) {
-		this.configService = configService;
-		this.bot = new Telegraf<IBotContext>(this.configService.get('TOKEN_TELEGRAM'));
+		this.bot = new Telegraf<IBotContext>(config.get('TOKEN_TELEGRAM'));
 		this.bot.use(new LocalSession({ database: "sessions.json" })).middleware();
 		this.bot.context.logger = logger;
 		this.bot.context.db = database;

@@ -2,23 +2,25 @@ import fs from 'fs';
 import moment from 'moment';
 import { ILoggerService } from './logger.interface';
 import { IConfigService } from '../config/config.interface';
+import { ConfigService } from '../config/config.service';
 
 export class LoggerService implements ILoggerService {
 	private static instance: LoggerService;
 	protected readonly pathDefault: string;
 	protected readonly pathErrors: string;
 
-	constructor(configService: IConfigService) {
-		this.pathDefault = configService.get('LOG_DEFAULT');
-		this.pathErrors = configService.get('LOG_ERRORS');
+	constructor() {
+		const config: IConfigService = ConfigService.getInstance();
+		this.pathDefault = config.get('LOG_DEFAULT');
+		this.pathErrors = config.get('LOG_ERRORS');
 	}
 
-	public static getInstance(configService: IConfigService): LoggerService {
+	public static getInstance(): LoggerService {
 		if (LoggerService.instance) {
 			return LoggerService.instance;
 		}
 
-		return LoggerService.instance = new LoggerService(configService);
+		return LoggerService.instance = new LoggerService();
 	}
 
 	public write(data: string|Array<string>, path = 'default'): void {

@@ -1,25 +1,29 @@
 import sqlite3 from 'sqlite3';
 import { IDatabaseService } from './database.interface';
+
 import { IConfigService } from '../config/config.interface';
+import { ConfigService } from '../config/config.service';
 import { ILoggerService } from '../logger/logger.interface';
+import { LoggerService } from '../logger/logger.service';
 
 export class DatabaseService implements IDatabaseService {
 	private static instance: DatabaseService;
-	private logger: ILoggerService;
+	private readonly logger: ILoggerService;
 	private database;
 
-	constructor(configService: IConfigService, logger: ILoggerService) {
-		this.database = new sqlite3.Database(configService.get('DB_NAME'));
-		this.logger = logger;
+	constructor() {
+		const config: IConfigService = ConfigService.getInstance();
+		this.logger = LoggerService.getInstance();
+		this.database = new sqlite3.Database(config.get('DB_NAME'));
 		this.init();
 	}
 
-	public static getInstance(configService: IConfigService, logger: ILoggerService): IDatabaseService {
+	public static getInstance(): IDatabaseService {
 		if (DatabaseService.instance) {
 			return DatabaseService.instance;
 		}
 
-		return DatabaseService.instance = new DatabaseService(configService, logger);
+		return DatabaseService.instance = new DatabaseService();
 	}
 
 	init(): void {
