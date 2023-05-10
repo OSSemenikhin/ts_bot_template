@@ -1,6 +1,7 @@
+import { Telegraf } from 'telegraf';
+import { code } from 'telegraf/format';
 import { Command } from './command.class';
 import { IBotContext } from '../context/context.interface';
-import { Telegraf } from 'telegraf';
 
 import { HELP_RESPONSE } from '../assets/responses';
 
@@ -11,7 +12,7 @@ export class HelpCommand extends Command {
 
 	handler(): void {
 		this.bot.help((ctx) => {
-			ctx.reply(HELP_RESPONSE);
+			ctx.reply(code(HELP_RESPONSE));
 		});
 	}
 }

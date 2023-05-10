@@ -1,16 +1,17 @@
 import { Telegraf } from 'telegraf';
+import { code } from 'telegraf/format';
+import { IAuthService } from './auth.interface';
 import { IBotContext } from '../context/context.interface';
 
 import {
 	UNREGISTERED_RESPONSE,
 	REGISTERED_RESPONSE,
-	SUCCESS_REGISTERATION_RESPONSE
+	SUCCESS_REGISTERATION_RESPONSE,
+	HELP_RESPONSE,
 } from '../assets/responses';
 
-export class Auth {
-	constructor(public bot: Telegraf<IBotContext>) {
-		this.init();
-	}
+export class AuthService implements IAuthService {
+	constructor(public bot: Telegraf<IBotContext>) {}
 
 	init(): void {
 		this.registration();
@@ -34,7 +35,8 @@ export class Auth {
 				ctx.reply(REGISTERED_RESPONSE);
 			}
 			this.bot.context?.db?.addUser(ctx.from.id);
-			ctx.reply(SUCCESS_REGISTERATION_RESPONSE);
+			await ctx.reply(SUCCESS_REGISTERATION_RESPONSE);
+			await ctx.reply(code(HELP_RESPONSE));
 		});
 	}
 }

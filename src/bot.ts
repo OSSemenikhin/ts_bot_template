@@ -6,7 +6,8 @@ import { IConfigService } from './config/config.interface';
 import { IDatabaseService } from './database/database.interface';
 import { ILoggerService } from './logger/logger.interface';
 
-import{ Auth } from './auth/auth.class';
+import{ IAuthService } from './auth/auth.interface';
+import{ AuthService } from './auth/auth.class';
 
 import { Command} from './commands/command.class';
 import { StartCommand } from './commands/start.command';
@@ -18,6 +19,7 @@ import { HiCommand } from './commands/hi.command';
 export class Bot {
 	bot: Telegraf<IBotContext>;
 	commands: Command[] = [];
+	auth: IAuthService;
 
 	private readonly configService: IConfigService;
 
@@ -32,11 +34,13 @@ export class Bot {
 		this.bot.context.logger = logger;
 		this.bot.context.db = database;
 
+		this.auth = new AuthService(this.bot);
+
 		this.init();
 	}
 
 	init() {
-		new Auth(this.bot);
+		this.auth.init();
 		this.commands = [
 			new StartCommand(this.bot),
 			new HelpCommand(this.bot),

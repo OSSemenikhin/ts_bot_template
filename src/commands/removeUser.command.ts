@@ -10,7 +10,7 @@ export class RemoveUserCommand extends Command {
 	}
 
 	handler(): void {
-		this.bot.hears('--rmme', async (ctx) => {
+		this.bot.hears('..rmme', async (ctx) => {
 			this.bot.context?.db?.removeUser(ctx.from.id);
 			ctx.reply(REMOVE_USER_RESPONSE)
 		});
