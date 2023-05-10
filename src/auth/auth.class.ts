@@ -8,6 +8,7 @@ import {
 	REGISTERED_RESPONSE,
 	SUCCESS_REGISTERATION_RESPONSE,
 	HELP_RESPONSE,
+	HELP_INFO,
 } from '../assets/responses';
 
 export class AuthService implements IAuthService {
@@ -36,9 +37,11 @@ export class AuthService implements IAuthService {
 			}
 			this.bot.context?.db?.addUser(ctx.from.id);
 			await ctx.reply(SUCCESS_REGISTERATION_RESPONSE);
+			await ctx.reply(code(HELP_INFO));
 			await ctx.reply(code(HELP_RESPONSE));
 		});
 	}
 }
+
 
 
